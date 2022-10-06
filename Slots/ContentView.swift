@@ -14,12 +14,15 @@ struct ContentView: View {
     @State var slot2 = "slot2"
     @State var slot3 = "slot3"
     @State var score = 0
+    @State private var alertIsPresented = false
     
     var body: some View {
         VStack {
             Text("Slots")
-                .font(.title)
+                .font(.largeTitle)
                 .padding(.top, 50.0)
+            Text("By Soorya").padding(.top, 0.1)
+                .font(.subheadline)
             Spacer()
             Text("Credits: " + String(credits))
             Text("Score: " + String(score)).padding(.top, 15.0)
@@ -41,19 +44,28 @@ struct ContentView: View {
                 
                 if slot1 == slot2 && slot2 == slot3 {
                     credits += 15
-                    score += 15
+                    score += 20
                 } else {
                     credits -= 15
                 }
                 
-                return
-                
-                
+                if credits <= 15 {
+                    self.alertIsPresented = true
+                }
                 
             } label: {
                 Text("Spin")
                     .padding(.horizontal, 70.0).padding(.vertical, 13.0)
-            }.frame(width: 200.0, height: 50.0).buttonStyle(.borderedProminent).shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
+            }.frame(width: 200.0, height: 50.0).buttonStyle(.borderedProminent).shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/).alert(isPresented: $alertIsPresented, content: {
+                Alert(
+                    title: Text("You have insufficient credits"),
+                    message: Text("Your score is " + String(score) + ". You have insufficient credits to continue and your game will be reset."),
+                    dismissButton: .default(Text("Okay")){
+                        credits = 1000
+                        score = 0
+                    }
+                )
+            })
 
             Spacer()
         }
